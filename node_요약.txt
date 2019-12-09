@@ -1,0 +1,4 @@
+- npm install 시 package.json의 dependencies를 읽어들여서 라이브러리를 다운받는다.
+package.json의 dependencies 는 라이르러리 install 시 --save를 붙여서 삽입 할수 있다.
+
+node 실행 시 : node xxx.js
