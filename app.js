@@ -4,6 +4,9 @@ var express = require('express');
 var app = express();
 //post method 파라미터 활용할때 사용하는 모듈
 var bodyParser = require('body-parser');
+//mariadb 모듈 설정
+var mariadb = require('mariadb');
+
 
 //서버 실행작업
 app.listen(3000, function() {
