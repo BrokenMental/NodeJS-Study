@@ -9,5 +9,42 @@
             email : <input type="text" name="email"><br/>
             <input type="submit">
         </form>
+
+        <button class="ajaxsend">ajaxsend</button>
+
+        <div class="result"></div>
+
+        <script>
+            // 버튼 클릭 시 실행할 동작(addEventListener 함수가 오면 실행 될 동작을 설정할 수 있다.)
+            document.querySelector('.ajaxsend').addEventListener('click', function() {
+                var inputdata = document.forms[0].elements[0].value;
+                sendAjax('http://127.0.0.1:3000/ajax_send_email', inputdata);
+            });
+
+            function sendAjax(url, data){
+                // json 형식 생성
+                var data = {'email' : data};
+                // json 형식을 string으로 변경, string을 json으로 변경 : JSON.parse();
+                data = JSON.stringify(data);
+
+                // ajax 사용 시
+                var xhr = new XMLHttpRequest();
+                // method type과 url 지정
+                xhr.open('POST', url);
+                // Header 설정 추가
+                xhr.setRequestHeader('Content-Type', "application/json");
+                // 전송할 데이터 설정( 데이터는 string 형식으로 전송 가능하다. )
+                xhr.send(data);
+                // ajax 통신 후 설정
+                xhr.addEventListener('load', function(){
+                    // xhr.responseText : 전송받은 데이터
+                    // console.log(xhr.responseText);
+                    var result = JSON.parse(xhr.responseText);
+                    // 전송받은 데이터 조건 확인
+                    if(result.result !== "ok") return;
+                    document.querySelector(".result").innerHTML = result.email;
+                });
+            }
+        </script>
     </body>
 </html>

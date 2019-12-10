@@ -2,3 +2,4 @@
 package.json의 dependencies 는 라이르러리 install 시 --save를 붙여서 삽입 할수 있다.
 
 node 실행 시 : node xxx.js
+(nodemon 설치 시 : nodemon xxx.js, nodemon : 파일 수정 확인 시 서버 자동 재실행 라이브러리)
