@@ -16,19 +16,20 @@ var pool = mariadb.createPool({
 	database: 'testdb' // db 선택
 });
 
-var con = pool.getConnection();
+//db 연결작업
+//var conn = pool.getConnection();
 
 
-//mariadb 연결작업(?)
+//mariadb 연결작업
 //then()은 앞의 함수의 리턴값을 받는다.
 // 여기서 conn은 getConnection()의 리턴값을 임의로 지정한것.
-pool.getConnection().then((conn) => {
+/*pool.getConnection().then((conn) => {
 	conn.query("SELECT * FROM ingu").then((rows) => {
 		console.log(rows);
 
 		return 0;
 	});
-});
+});*/
 
 //서버 실행작업
 app.listen(3000, function() {
@@ -69,7 +70,37 @@ app.post('/email_post', function(req,res) {
 });
 
 app.post('/ajax_send_email', function(req, res){
-	console.log(req.body.email);
-	var responseData = {'result' : 'ok', 'email' : req.body.email};
-	res.json(responseData);
+	//console.log(req.body.email);
+	//var responseData = {'result' : 'ok', 'email' : req.body.email};
+
+	var email = req.body.email;
+	var responseData = {};
+
+	//db connection은 비동기로 처리되기 때문에 밖에서 데이터를 출력할 경우 promise 에러가 발생한다.
+	pool.getConnection().then((conn) => {
+		conn.query('select name from nodetest where email ="' + email + '"')
+		.then((rows) => {
+			//rows는 metadata까지 나오기 때문에 값만 꺼내려면 index를 지정해주자
+			if(rows[0]){
+				//rows[0].{json 명} 으로 해당 json 데이터를 꺼낼 수 있다.
+				console.log(rows[0].name);
+				responseData.result = "ok";
+				responseData.name = rows[0].name;
+			}else{
+				console.log('none : '+rows[0]);
+				responseData.result = "none";
+				responseData.name = "";
+			}
+			conn.end();
+
+			//서버에 json형태로 보낼 경우 사용.
+			res.json(responseData);
+		})
+		.catch((err) => {
+			console.log('err : '+err);
+			
+			//connection 종료
+			conn.end();
+		});
+	});
 });
