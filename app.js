@@ -7,6 +7,28 @@ var bodyParser = require('body-parser');
 //mariadb 모듈 설정
 var mariadb = require('mariadb');
 
+//mariadb 연결설정(대부분의 연결은 mysql과 유사하다)
+var pool = mariadb.createPool({
+	host: 'localhost',
+	user: 'root',
+	password: '1234',
+	port: 4306, // port가 기본값과 다를경우 입력
+	database: 'testdb' // db 선택
+});
+
+var con = pool.getConnection();
+
+
+//mariadb 연결작업(?)
+//then()은 앞의 함수의 리턴값을 받는다.
+// 여기서 conn은 getConnection()의 리턴값을 임의로 지정한것.
+pool.getConnection().then((conn) => {
+	conn.query("SELECT * FROM ingu").then((rows) => {
+		console.log(rows);
+
+		return 0;
+	});
+});
 
 //서버 실행작업
 app.listen(3000, function() {
